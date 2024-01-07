@@ -19,9 +19,9 @@ app.add_middleware(
 
 class model_input(BaseModel):
     
-    NM-AIST_D: int
-    NM-AIST_B: int
-    NM-AIST_C: int
+    NM_AIST_D: int
+    NM_AIST_B: int
+    NM_AIST_C: int
     CDAC_14: int
        
 
@@ -35,9 +35,9 @@ def wifi_pred(input_parameters : model_input):
     input_data = input_parameters.json()
     input_dictionary = json.loads(input_data)
     
-    a = input_dictionary['NM-AIST_D']
-    b = input_dictionary['NM-AIST_B']
-    c = input_dictionary['NM-AIST_C']
+    a = input_dictionary['NM_AIST_D']
+    b = input_dictionary['NM_AIST_B']
+    c = input_dictionary['NM_AIST_C']
     dac = input_dictionary['CDAC_14']
 
 
