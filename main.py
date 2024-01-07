@@ -26,16 +26,16 @@ class model_input(BaseModel):
        
 
 # loading the saved model
-diabetes_model = pickle.load(open('random_forest_model.pkl','rb'))
+wifi_model = pickle.load(open('random_forest_model.pkl','rb'))
 
 
 @app.post('/predict')
-def diabetes_pred(input_parameters : model_input):
+def wifi_pred(input_parameters : model_input):
     
     input_data = input_parameters.json()
     input_dictionary = json.loads(input_data)
     
-    d = input_dictionary['NM-AIST_D']
+    a = input_dictionary['NM-AIST_D']
     b = input_dictionary['NM-AIST_B']
     c = input_dictionary['NM-AIST_C']
     dac = input_dictionary['CDAC_14']
@@ -43,6 +43,6 @@ def diabetes_pred(input_parameters : model_input):
 
     input_list = [a, b, c, dac]
     
-    prediction = diabetes_model.predict([input_list])
+    prediction = wifi_model.predict([input_list])
     
 
