@@ -25,7 +25,7 @@ class ModelInput(BaseModel):
 # loading the saved model
 wifi_model = pickle.load(open('random_forest_model.pkl', 'rb'))
 
-@app.post('/predict')
+@app.post('')
 def wifi_pred(input_parameters: ModelInput):
     input_data = input_parameters.json()
     input_dictionary = json.loads(input_data)
