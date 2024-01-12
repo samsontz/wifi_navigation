@@ -1,8 +1,8 @@
-from fastapi import FastAPI
-import uvicorn
+# main.py
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import pickle
-import json
+import os
 
 app = FastAPI()
 
@@ -12,28 +12,31 @@ class ModelInput(BaseModel):
     NMAIST_C: int
     CDAC_14: int
 
-# loading the saved model
-wifi_model = pickle.load(open('random_forest_model.pkl', 'rb'))
+class ModelOutput(BaseModel):
+    output_x: float
+    output_y: float
 
-@app.post('/predict')
+# Load model
+def load_model():
+    model_path = os.getenv("MODEL_PATH", "random_forest_model.pkl")
+    try:
+        with open(model_path, "rb") as file:
+            return pickle.load(file)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Model file not found at {model_path}")
+
+wifi_model = load_model()
+
+@app.post('/predict', response_model=ModelOutput)
 def wifi_pred(input_parameters: ModelInput):
-    input_data = input_parameters.json()
-    input_dictionary = json.loads(input_data)
+    try:
+        prediction = wifi_model.predict([[input_parameters.NMAIST_D, 
+                                          input_parameters.NMAIST_B, 
+                                          input_parameters.NMAIST_C, 
+                                          input_parameters.CDAC_14]])
+        output_x, output_y = prediction[0]
+        return {"output_x": output_x, "output_y": output_y}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-    a = input_dictionary['NMAIST_D']
-    b = input_dictionary['NMAIST_B']
-    c = input_dictionary['NMAIST_C']
-    dac = input_dictionary['CDAC_14']
-
-    input_list = [a, b, c, dac]
-    prediction = wifi_model.predict([input_list])
-
-    # Extracting X and Y predictions
-    output_x, output_y = prediction[0]
-
-    return {"output_x": output_x, "output_y": output_y}
-
-    if __name__ == '__main__':
-        uvicorn.run(app)
-
-    
+# The Uvicorn command should be specified in the Procfile for Heroku
