@@ -2,7 +2,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import pickle
-import os
+#import os
 
 app = FastAPI()
 
@@ -17,17 +17,18 @@ class ModelOutput(BaseModel):
     output_y: float
 
 # Load model
-def load_model():
-    model_path = os.getenv("MODEL_PATH", "random_forest_model.pkl")
-    try:
-        with open(model_path, "rb") as file:
-            return pickle.load(file)
-    except FileNotFoundError:
-        raise FileNotFoundError(f"Model file not found at {model_path}")
+# def load_model():
+#     model_path = os.getenv("MODEL_PATH", "random_forest_model.pkl")
+#     try:
+#         with open(model_path, "rb") as file:
+#             return pickle.load(file)
+#     except FileNotFoundError:
+#         raise FileNotFoundError(f"Model file not found at {model_path}")
 
-wifi_model = load_model()
+# wifi_model = load_model()
+wifi_model = pickle.load(open('random_forest_model.pkl', 'rb'))
 
-@app.post('/predict', response_model=ModelOutput)
+@app.post('/predicts', response_model=ModelOutput)
 def wifi_pred(input_parameters: ModelInput):
     try:
         prediction = wifi_model.predict([[input_parameters.NMAIST_D, 
