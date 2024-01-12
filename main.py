@@ -6,16 +6,6 @@ import json
 
 app = FastAPI()
 
-origins = ["*"]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 class ModelInput(BaseModel):
     NMAIST_D: int
     NMAIST_B: int
@@ -25,7 +15,7 @@ class ModelInput(BaseModel):
 # loading the saved model
 wifi_model = pickle.load(open('random_forest_model.pkl', 'rb'))
 
-@app.post('')
+@app.post('/predict')
 def wifi_pred(input_parameters: ModelInput):
     input_data = input_parameters.json()
     input_dictionary = json.loads(input_data)
@@ -42,3 +32,5 @@ def wifi_pred(input_parameters: ModelInput):
     output_x, output_y = prediction[0]
 
     return {"output_x": output_x, "output_y": output_y}
+
+    
