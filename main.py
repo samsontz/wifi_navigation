@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
 from pydantic import BaseModel
 import pickle
 import json
@@ -32,5 +32,8 @@ def wifi_pred(input_parameters: ModelInput):
     output_x, output_y = prediction[0]
 
     return {"output_x": output_x, "output_y": output_y}
+
+    if __name__ == '__main__':
+        uvicorn.run(app)
 
     
